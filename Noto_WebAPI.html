@@ -20,6 +20,18 @@
 </p>
 
 <script>
+
+// 応答の定義（ハッシュ）    
+var response = {
+    "ゲーム,情報": "PS4速報を表示します。",
+    "ゲーム,人物,クリエイター": "ゲームクリエイターを表示します。",
+    "任天堂": "任天堂ダイレクトを表示します。",
+    "宮本茂": "宮本茂のサイトを表示します。",
+    "桜井政博": "桜井政博のサイトを表示します。",
+    "坂口博信": "坂口博信のサイトを表示します。",
+    "ゲーム,ジャンル": "ゲームジャンルを表示します。"
+};
+
 const URL = "https://jlp.yahooapis.jp/NLUService/V1/analyze?appid="; // APIのリクエストURL
 const APIID = "dj00aiZpPXFKYXJ5MFZEZVZjNCZzPWNvbnN1bWVyc2VjcmV0Jng9M2M-"; // あなたのアプリケーションID
 
@@ -56,12 +68,21 @@ asr.onresult = function(event){
     let output_not_final = '';
     if (event.results[event.resultIndex].isFinal) { // 結果が確定（Final）のとき
 	    asr.abort(); // 音声認識を停止
-
+    
+		<!-- // ゲーム関連の応答をJSONに変換 -->
+		<!-- var postdata = { -->
+			<!-- "id": "1234-1", // JSON-RPC2.0 id、値は任意で、指定した値がレスポンスのidになる。 -->
+			<!-- "jsonrpc" : "2.0", // APIで固定 -->
+			<!-- "method" : "jlp.daservice.parse", // APIで固定 -->
+			<!-- "params" : { "q" : response }, // 解析対象のテキスト  -->
+		<!-- }; -->
+		<!-- var jsondata = JSON.stringify(postdata); -->
+		
 		let queryURL = URL + APIID + "&intext=" + transcript;
 		console.log(queryURL);
 		
 		// HTTPリクエストの準備
-		const request = new XMLHttpRequest();
+		const request = new XMLHttpRequest() + response;//ゲーム関連文字も変換
 		request.open('GET', queryURL, true);
 		request.responseType = 'json'; // レスポンスはJSON形式に変換
 	
