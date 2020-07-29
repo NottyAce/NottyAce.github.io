@@ -100,7 +100,7 @@ asr.onresult = function(event){
 			
 				// method が SAY のときのみ
 				if(res.result.method == "SAY"){
-					var answer = res.result.param_text_tts || res.result.param_text || response[2];
+					var answer = res.result.param_text_tts || res.result.param_text ;//|| response[2];
 					tts.text = answer;
 
 	    			// 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
