@@ -82,7 +82,7 @@ asr.onresult = function(event){
 		console.log(queryURL);
 		
 		// HTTPリクエストの準備
-		const request = new XMLHttpRequest() + response;//ゲーム関連文字も変換
+		const request = new XMLHttpRequest() //+ response;//ゲーム関連文字も変換
 		request.open('GET', queryURL, true);
 		request.responseType = 'json'; // レスポンスはJSON形式に変換
 	
@@ -92,7 +92,7 @@ asr.onresult = function(event){
     		// readyState == 4 操作完了
     		// status == 200 リクエスト成功（HTTPレスポンス）
 				
-				let res = this.response; // 結果はJSON形式
+				let res = this.response + response; // 結果はJSON形式
 
 				Object.keys(res.result).forEach(function (key) {
 					console.log(key + ": " + res.result[key])
@@ -100,7 +100,7 @@ asr.onresult = function(event){
 			
 				// method が SAY のときのみ
 				if(res.result.method == "SAY"){
-					var answer = res.result.param_text_tts || res.result.param_text;
+					var answer = res.result.param_text_tts || res.result.param_text || response[2];
 					tts.text = answer;
 
 	    			// 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
