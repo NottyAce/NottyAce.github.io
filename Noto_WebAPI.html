@@ -8,29 +8,43 @@
 </head>
 <body>
 
-<h1>Yahoo!JAPAN 自然言語理解Web APIを用いた音声対話</h1>
+<h1>ゲーム関係の情報を表示する音声対話アプリ</h1>
 
 <p>
 <button id="startButton">start</button>
 <button id="stopButton">stop</button>
+
 </p>
 
 <p>
 <div id="resultOutput"></div>
+	<img src="switch.jpg" alt="nintendo switchの画像" >
+	<img src="ps4.png" alt="ps4の画像">
 </p>
 
 <script>
 
 // 応答の定義（ハッシュ）    
 var response2 = {
-    "ゲーム,情報": "PS4速報を表示します。",
-    "ゲーム,人物,クリエイター": "ゲームクリエイターを表示します。",
-    "任天堂": "任天堂ダイレクトを表示します。",
-    "宮本茂": "宮本茂のサイトを表示します。",
-    "桜井政博": "桜井政博のサイトを表示します。",
-    "坂口博信": "坂口博信のサイトを表示します。",
-    "ゲーム,ジャンル": "ゲームジャンルを表示します。"
+    "ゲーム,情報": "PS4速報を表示します。http://openworldnews.net/",
+    "ゲーム,人物,クリエイター": "ゲームクリエイターを表示します。https://ja.wikipedia.org/wiki/%E3%82%B2%E3%83%BC%E3%83%A0%E3%82%AF%E3%83%AA%E3%82%A8%E3%82%A4%E3%82%BF%E3%83%BC%E4%B8%80%E8%A6%A7",
+    "任天堂": "任天堂ダイレクトを表示します。https://www.youtube.com/user/NintendoJPofficial",
+    "宮本茂": "宮本茂のサイトを表示します。https://ja.wikipedia.org/wiki/%E5%AE%AE%E6%9C%AC%E8%8C%82",
+    "桜井政博": "桜井政博のサイトを表示します。https://ja.wikipedia.org/wiki/%E5%AE%AE%E6%9C%AC%E8%8C%82",
+    "坂口博信": "坂口博信のサイトを表示します。https://ja.wikipedia.org/wiki/%E5%9D%82%E5%8F%A3%E5%8D%9A%E4%BF%A1",
+    "ゲーム,ジャンル": "ゲームジャンルを表示します。https://ja.wikipedia.org/wiki/%E3%82%B3%E3%83%B3%E3%83%94%E3%83%A5%E3%83%BC%E3%82%BF%E3%82%B2%E3%83%BC%E3%83%A0%E3%81%AE%E3%82%B8%E3%83%A3%E3%83%B3%E3%83%AB"
 };
+
+<!-- var response3 = { -->
+     <!-- "PS4速報を表示します。":"http://openworldnews.net/", -->
+     <!-- "ゲームクリエイターを表示します。":"https://ja.wikipedia.org/wiki/%E3%82%B2%E3%83%BC%E3%83%A0%E3%82%AF%E3%83%AA%E3%82%A8%E3%82%A4%E3%82%BF%E3%83%BC%E4%B8%80%E8%A6%A7", -->
+    <!-- "任天堂ダイレクトを表示します。": "https://www.youtube.com/user/NintendoJPofficial", -->
+    <!-- "宮本茂のサイトを表示します。": "https://ja.wikipedia.org/wiki/%E5%AE%AE%E6%9C%AC%E8%8C%82", -->
+    <!-- "桜井政博のサイトを表示します。":  "https://ja.wikipedia.org/wiki/%E6%A1%9C%E4%BA%95%E6%94%BF%E5%8D%9A", -->
+	 <!-- "坂口博信のサイトを表示します。":"https://ja.wikipedia.org/wiki/%E5%9D%82%E5%8F%A3%E5%8D%9A%E4%BF%A1", -->
+	<!-- "ゲームジャンルを表示します。": "https://ja.wikipedia.org/wiki/%E3%82%B3%E3%83%B3%E3%83%94%E3%83%A5%E3%83%BC%E3%82%BF%E3%82%B2%E3%83%BC%E3%83%A0%E3%81%AE%E3%82%B8%E3%83%A3%E3%83%B3%E3%83%AB" -->
+<!-- }; -->
+
 
 const URL = "https://jlp.yahooapis.jp/NLUService/V1/analyze?appid="; // APIのリクエストURL
 const APIID = "dj00aiZpPXFKYXJ5MFZEZVZjNCZzPWNvbnN1bWVyc2VjcmV0Jng9M2M-"; // あなたのアプリケーションID
@@ -68,21 +82,12 @@ asr.onresult = function(event){
     let output_not_final = '';
     if (event.results[event.resultIndex].isFinal) { // 結果が確定（Final）のとき
 	    asr.abort(); // 音声認識を停止
-    
-		<!-- // ゲーム関連の応答をJSONに変換 -->
-		<!-- var postdata = { -->
-			<!-- "id": "1234-1", // JSON-RPC2.0 id、値は任意で、指定した値がレスポンスのidになる。 -->
-			<!-- "jsonrpc" : "2.0", // APIで固定 -->
-			<!-- "method" : "jlp.daservice.parse", // APIで固定 -->
-			<!-- "params" : { "q" : response }, // 解析対象のテキスト  -->
-		<!-- }; -->
-		<!-- var jsondata = JSON.stringify(postdata); -->
 		
 		let queryURL = URL + APIID + "&intext=" + transcript;
 		console.log(queryURL);
 		
 		// HTTPリクエストの準備
-		const request = new XMLHttpRequest(); //+ response;//ゲーム関連文字も変換
+		const request = new XMLHttpRequest(); 
 		request.open('GET', queryURL, true);
 		request.responseType = 'json'; // レスポンスはJSON形式に変換
 	
@@ -92,27 +97,82 @@ asr.onresult = function(event){
     		// readyState == 4 操作完了
     		// status == 200 リクエスト成功（HTTPレスポンス）
 				
-				let res = this.response ;//+ response2; // 結果はJSON形式
+				let res = this.response; // 結果はJSON形式
 
 				Object.keys(res.result).forEach(function (key) {
 					console.log(key + ": " + res.result[key])
 				});
-			
+				
+				let answer2;
+        
+				let keys2 = Object.keys(response2);
+				keys2.forEach(function(key2) {
+					let flag = true;
+					console.log(transcript);
+					key2.split(',').forEach(function(word) {              
+						let pattern = new RegExp(word);
+						let flag_test = pattern.test(transcript); // マッチしたらtrue, しなかったらfalse
+						flag = flag && flag_test; // 両方trueならtrue
+						console.log(pattern + '+' + ':' + flag_test);
+						//flag = flag && new RegExp(word).test(transcript);
+					});
+					
+					console.log(key2);
+					
+					if(flag){
+						answer2 = response2[key2];
+						console.log(key2 + " : " + answer2);
+						tts.text = answer2;
+						
+						// 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
+						tts.onend = function(event){
+							
+							//ウェブページの代入
+							<!-- let ret3 = response3[transcript]; -->
+							<!-- let answer3 -->
+							<!-- let webpage; -->
+							
+							<!-- if(typeof ret3 == 'undefined'){ -->
+								<!-- answer3 = "ごめんなさい。わかりません。"; -->
+							<!-- }else{ -->
+								<!-- answer3 = ret3[0]; -->
+								<!-- webpage = ret3[1]; -->
+							<!-- } -->
+							
+							<!-- if(answer2 == answer3){ -->
+								<!-- if(typeof webpage != 'undefined'){ -->
+									<!-- location.href = webpage; // ページを移動 -->
+								<!-- }  -->
+							<!-- } -->
+							 
+						
+							asr.start(); // 音声認識を再開
+						}
+						
+						output += transcript + ' => ' + answer2 + '<br>';
+						resultOutput.innerHTML = output;
+						speechSynthesis.speak(tts); // 再生
+					}
+				});
+				
+				if(typeof answer2 == 'undefined'){
+				
 				// method が SAY のときのみ
-				if(res.result.method == "SAY"){
-					var answer = res.result.param_text_tts || res.result.param_text ;//|| response[2];
-					tts.text = answer;
+					if(res.result.method == "SAY"){
+						var answer = res.result.param_text_tts || res.result.param_text ;
+						tts.text = answer;
 
-	    			// 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
-	    			tts.onend = function(event){
-	        			asr.start(); // 音声認識を再開
-	    			}
+						// 再生が終了（end）ときのイベントハンドラ（終了したときに実行される）
+						tts.onend = function(event){
+							asr.start(); // 音声認識を再開
+						}
 	    	
-					output += transcript + ' => ' + answer + '<br>';
-					resultOutput.innerHTML = output;
-	    			speechSynthesis.speak(tts); // 再生
-				}else{
-					asr.start();  // 音声認識を再開
+						output += transcript + ' => ' + answer + '<br>';
+						resultOutput.innerHTML = output;
+						speechSynthesis.speak(tts); // 再生
+					}else{
+						asr.start();  // 音声認識を再開
+					}
 				}
 			}
 		}
